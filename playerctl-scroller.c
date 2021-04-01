@@ -20,6 +20,7 @@ char* script = NULL;
 
 char* full;
 int offset = 0;
+char* prefix = "";
 const int maxLength = 1000;
 const int commandLength = 250;
 
@@ -366,6 +367,22 @@ void updateButton(int playing, int paused){
 
 }
 
+void updatePrefix(){
+
+    char* message = (char*) malloc(commandLength); 
+    strcpy(message, script);
+    strcat(message, " --prefix");
+    char* reply = getStdout(message);
+
+    if (strlen(prefix) > 0)
+        free(prefix);
+    prefix = (char*) malloc(strlen(reply)+1);
+    strcpy(prefix, reply);
+    free(message);
+    free(reply);
+
+}
+
 void rotateText(int dontRotate){
 
     // skip wide character parts 
@@ -488,14 +505,22 @@ int main(int argc, char* argv[]){
             status[i] = '\0';
         }
         
-        if (time == 0)
+        if (time == 0){
+            updatePrefix();
             updateArgs(argc, argv, dest);
+        }
 
         int playing = strcmp(status, "Playing");
         int paused = strcmp(status, "Paused");
         int offline = strcmp(status, "OFFLINE");
 
+        if (update > 0 && time % update == 0 && offline != 0){
+            updatePrefix();
+            updateArgs(argc, argv, dest);
+        }
+
         if (playing == 0 || paused == 0){
+            printf("%s", prefix);
             if (forceRotate || strlen(full) > len){
                 if (playing == 0)
                     offset++;
@@ -511,8 +536,6 @@ int main(int argc, char* argv[]){
         if (offset >= strlen(full))
             offset -= strlen(full); 
 
-        if (update > 0 && time % update == 0 && offline != 0)
-            updateArgs(argc, argv, dest);
         if (i3 > 0)
             updatei3();
         updateButton(playing, paused);

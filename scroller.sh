@@ -17,7 +17,7 @@ MODULE="spotify-play-pause"
 # Set the name of desired mpris player,
 # such as firefox, spotify, chromium,
 # vlc or simply just playerctl.
-PLAYER="spotify"
+PLAYER="playerctl"
 
 # Set delay (in seconds) between rotating 
 # a single character of text (lower
@@ -132,6 +132,33 @@ if [ "$1" = "--status" ]; then
     else
         echo "OFFLINE" ; exit 0
     fi
+
+fi
+
+if [ "$1" = "--prefix" ]; then
+
+    INSTANCE=$(dbus-send --print-reply \
+        --dest=org.mpris.MediaPlayer2.playerctld \
+        /org/mpris/MediaPlayer2 \
+        org.freedesktop.DBus.Properties.Get \
+        string:"com.github.altdesktop.playerctld" \
+        string:"PlayerNames" \
+        | grep string | head -1 \
+        | sed 's/.*Player2\.//g;s/.$//g;s/\..*//g')
+    
+    case $INSTANCE in
+        chromium)
+            echo -n " ";;
+        chrome)
+            echo -n " ";;
+        firefox)
+            echo -n " ";;
+        spotify)
+            echo -n " ";;
+        *)
+            echo -n "";;
+    esac
+    exit 0
 
 fi
 
