@@ -389,7 +389,7 @@ void rotateText(int dontRotate){
     // the value of "len"
     int printableChars = (strlen(full) < len) ? strlen(full) : len;
     
-    for (int i = 0; i < printableChars - shortenLength - ((dontRotate) ? wideCharOffset : 0); i++){
+    for (int i = 0; i < printableChars - ((dontRotate) ? wideCharOffset : shortenLength); i++){
         char* ptr = full+((offset+i+wideCharOffset)%strlen(full));
         char c = *ptr;
 
@@ -459,7 +459,8 @@ void rotateText(int dontRotate){
         else // default (1 byte wide)
             printf("%c", c);
     }
-    offset += (firstCharWidth - 1);
+    if (!dontRotate)
+        offset += (firstCharWidth - 1);
 
 }
 
