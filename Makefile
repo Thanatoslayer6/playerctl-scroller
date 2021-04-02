@@ -21,3 +21,5 @@ reinstall:
 	$(CC) -o playerctl-scroller playerctl-scroller.c $(CFLAGS) && \
 	cp ./playerctl-scroller /usr/local/bin/
 
+compile:
+	$(CC) -o playerctl-scroller playerctl-scroller.c $(CFLAGS)
