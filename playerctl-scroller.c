@@ -505,7 +505,7 @@ int main(int argc, char* argv[]){
                 rotateText(1);
         }
         else
-            printf("No player is running");
+            printf("");
 
         time++;
         if (offset >= strlen(full))
